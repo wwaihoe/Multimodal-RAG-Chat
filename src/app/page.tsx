@@ -1,7 +1,8 @@
 import Image from 'next/image'
 import styles from './page.module.css'
 
-import FileLoader from './FileLoader'
+import FileLoader from './components/FileLoader'
+import ChatBox from './components/ChatBox'
 
 export default function Home() {
   return (
@@ -22,14 +23,8 @@ export default function Home() {
         </div>
       </div>
       <div className={styles.center}>
-        <div className={styles.fileLoader}>
-          <FileLoader/>
-        </div>
-        <div className={styles.chatbox}>
-          <p>
-            chatbox
-          </p>
-        </div>
+        <FileLoader/>
+        <ChatBox/>
       </div>
     </main>
   )

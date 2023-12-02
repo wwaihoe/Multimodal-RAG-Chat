@@ -32,7 +32,6 @@
   position: relative;
   width: 100%;
   padding: 1rem;
-  border: 2px lightpink;
 }
 
 .fileLoader {
@@ -50,6 +49,20 @@
 .chatbotLogo {
   filter: invert(1);
   position: relative;
+}
+
+.sendMessageIcon {
+  filter: invert(1);
+  position: relative;
+}
+
+.chatBox {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  width: 100%;
+  max-height: 70px;
+  padding: 1rem;
 }
 
 @keyframes rotate {

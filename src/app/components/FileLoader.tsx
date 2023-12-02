@@ -1,6 +1,6 @@
 "use client"
 
-import styles from './page.module.css'
+import styles from '../page.module.css'
 import React, { useState } from 'react'
 
 import FileDisplay from './FileDisplay'
@@ -65,8 +65,19 @@ function FileLoader() {
     <div>
       <div>
         <h3>
+          Files in Knowledge Base
+        </h3>
+        <ul>
+          {fileList}
+        </ul>
+      </div>
+      <div>
+        <h3>
           Upload text file for knowledge base
         </h3>
+        <label htmlFor="fileInput" className="custom-file-input">
+          Choose file
+        </label>
         <input type="file" id="fileInput" onChange={handleFileChange} />
           <button onClick={handleUpload}>Upload</button>
             {selectedFile && (
@@ -75,14 +86,6 @@ function FileLoader() {
                 <p>File Size: {selectedFile.size} bytes</p>
               </div>
             )}
-      </div>
-      <div>
-        <h3>
-          Files in Knowledge Base
-        </h3>
-        <ul>
-          {fileList}
-        </ul>
       </div>
     </div>
   )
