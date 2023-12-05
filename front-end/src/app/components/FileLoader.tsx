@@ -76,7 +76,7 @@ function FileLoader() {
           Upload text file for knowledge base
         </h3>
         <label htmlFor="fileInput" className="custom-file-input">
-          Choose file
+          Choose file 
         </label>
         <input type="file" id="fileInput" onChange={handleFileChange} />
           <button onClick={handleUpload}>Upload</button>

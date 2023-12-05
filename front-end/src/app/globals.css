@@ -56,12 +56,14 @@ button {
   background-color: transparent;
   color: white;
   padding: 5px;
+  border-radius: 8px;
 }
 
 input[type=text] {
   width: 70%;
   margin-right: 5px;
   background-color: rgb(50, 50, 50);
+  border-radius: 8px;
 }
 
 input[type="file"] {
@@ -77,4 +79,5 @@ input[type="file"] {
   cursor: pointer;
   margin-right: 5px;
   padding: 5px;
+  border-radius: 8px;
 }
