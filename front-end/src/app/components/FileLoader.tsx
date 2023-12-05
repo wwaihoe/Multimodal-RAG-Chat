@@ -11,8 +11,11 @@ interface fileItem {
   type: string
 }
 
+const chatModelURL = ""
+const chatModelPort = ""
+
 function FileLoader() {
-  const [selectedFile, setSelectedFile] = useState<fileItem | null>(null)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [uploadedFiles, setUploadedFiles] = useState<fileItem[] | []>([])
   const fileList = uploadedFiles.map((fileToDisplay) =>
     <FileDisplay key={fileToDisplay.name} name={fileToDisplay.name} size={fileToDisplay.size} type={fileToDisplay.type}/>
@@ -25,25 +28,41 @@ function FileLoader() {
       setSelectedFile(file)
     }
   }
-  const handleUpload = () => {
+  const handleUpload = async() => {
     // Handle the file upload logic here, for example, send the file to a server
     if (selectedFile) {
       let sameName = false
       for (const uploadedFile of uploadedFiles) {
         if (selectedFile.name === uploadedFile.name) {
-          alert('A file with the same name has already been uploaded')
+          alert("A file with the same name has already been uploaded")
           sameName = true
           break
         }
       }
       if (!sameName) {
-        // You can perform actions like uploading the file to a server here
-        console.log('Uploading file:', selectedFile)
-        const newFile: fileItem = {"name": selectedFile.name, 
-          "size": selectedFile.size,
-          "type": selectedFile.type
+        console.log("Uploading file:", selectedFile)
+        let form = new FormData();
+        form.append("file", selectedFile);
+        try{
+          let response = await fetch("${chatModelURL}:${chatModelPort}/upload", {
+                method: 'POST',
+                body: form
+              });
+          if (response.ok) {
+            console.log("Successfully uploaded file:", selectedFile)
+            const newFile: fileItem = {"name": selectedFile.name, 
+              "size": selectedFile.size,
+              "type": selectedFile.type
+            }
+            setUploadedFiles([...uploadedFiles, newFile])
+          }
+          else {
+            alert("Failed to upload file")
+          }
         }
-        setUploadedFiles([...uploadedFiles, newFile])
+        catch(err) {
+          console.log(err)
+        }
       }
       // Reset the selectedFile state after uploading
       setSelectedFile(null)
