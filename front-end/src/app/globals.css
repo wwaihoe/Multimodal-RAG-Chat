@@ -52,16 +52,20 @@ input {
 }
 
 button {
+  vertical-align: middle;
   font-size: 16px;
   background-color: transparent;
   color: white;
-  padding: 5px;
+  padding: 8px;
   border-radius: 8px;
 }
 
 input[type=text] {
-  width: 70%;
+  vertical-align: middle;
+  width: 75%;
+  height: 30px;
   margin-right: 5px;
+  padding: 1rem;
   background-color: rgb(50, 50, 50);
   border-radius: 8px;
 }
