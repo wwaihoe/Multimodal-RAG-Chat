@@ -17,9 +17,11 @@ const chatModelPort = ""
 function FileLoader() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [uploadedFiles, setUploadedFiles] = useState<fileItem[] | []>([])
+  
   const fileList = uploadedFiles.map((fileToDisplay) =>
     <FileDisplay key={fileToDisplay.name} name={fileToDisplay.name} size={fileToDisplay.size} type={fileToDisplay.type}/>
   )
+
   const handleFileChange = (event: React.ChangeEvent) => {
     // Get the selected file from the input
     const target = event.target as HTMLInputElement
@@ -28,8 +30,9 @@ function FileLoader() {
       setSelectedFile(file)
     }
   }
+
   const handleUpload = async() => {
-    // Handle the file upload logic here, for example, send the file to a server
+    // Handle the file upload logic
     if (selectedFile) {
       let sameName = false
       for (const uploadedFile of uploadedFiles) {
@@ -38,6 +41,14 @@ function FileLoader() {
           sameName = true
           break
         }
+      }
+      const uploadButton = document.getElementById("uploadButton") as HTMLButtonElement;
+      if (uploadButton) {
+        uploadButton.disabled = true
+      }
+      const loader = document.getElementById("loadingAnimation");
+      if (loader) {
+        loader.style.display = "block";
       }
       if (!sameName) {
         console.log("Uploading file:", selectedFile)
@@ -70,16 +81,24 @@ function FileLoader() {
       if (fileInput) {
         fileInput.value = ''
       }
+      if (uploadButton) {
+        uploadButton.disabled = false
+      }
+      if (loader) {
+        loader.style.display = "none";
+      }
     } else {
       console.log('No file selected')
     }
     console.log(uploadedFiles)
   }
+
   const handleDelete = (fileName: string) => {
     if (uploadedFiles.length > 0) {
       setUploadedFiles(uploadedFiles.filter(item => item.name !== fileName))
     }
   }
+
   return (
     <div>
       <div>
@@ -89,6 +108,7 @@ function FileLoader() {
         <ul>
           {fileList}
         </ul>
+        <div id="loadingAnimation" className="loader"></div>
       </div>
       <div>
         <h3>
@@ -98,7 +118,7 @@ function FileLoader() {
           Choose file 
         </label>
         <input type="file" id="fileInput" onChange={handleFileChange} />
-          <button onClick={handleUpload}>Upload</button>
+          <button id="uploadButton" onClick={handleUpload}>Upload</button>
             {selectedFile && (
               <div>
                 <p>Selected File: {selectedFile.name}</p>

@@ -1,17 +1,17 @@
 from fastapi import FastAPI, WebSocket, UploadFile, File
-from pydantic import BaseModel
-import chatModel
+import chatModel, retrieverModel
 
 app = FastAPI()
 
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return {"Server": "On"}
 
 @app.post("/upload")
 def upload_document(file: UploadFile = File(...)):
-    return {"filename": file.filename}
+    chatModel.addToVectorStore(file)
+    return
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
