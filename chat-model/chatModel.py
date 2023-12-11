@@ -1,24 +1,19 @@
 import os
 
 #INSERT HUGGINGFACE TOKEN
-HUGGINGFACEHUB_API_TOKEN = input("Enter HuggingFace token: ")
-
+#HUGGINGFACEHUB_API_TOKEN = input("Enter HuggingFace token: ")
+HUGGINGFACEHUB_API_TOKEN = "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"
 os.environ["HUGGINGFACEHUB_API_TOKEN"] = HUGGINGFACEHUB_API_TOKEN
 
-from langchain.chains import LLMChain
 from langchain.chains.question_answering import load_qa_chain
 from langchain.vectorstores import Chroma
-from langchain.docstore.document import Document
 from langchain.prompts import PromptTemplate
-from langchain.indexes.vectorstore import VectorstoreIndexCreator
 from PyPDF2 import PdfReader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import chromadb
 #for HuggingFace
 from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.llms import HuggingFacePipeline
-from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline, PreTrainedModel, AutoConfig
-from langchain import HuggingFaceHub
+from langchain.llms import HuggingFaceHub
 
 
 chroma_client = chromadb.PersistentClient(path="/chromadb/documents_chromadb")
@@ -40,10 +35,6 @@ embeddings = HuggingFaceEmbeddings(
     encode_kwargs=encode_kwargs
 )
 
-langchain_chroma = Chroma(
-    client=chroma_client,
-    embedding_function=embeddings,
-)
 
 repo_id = "tiiuae/falcon-7b-instruct"
 
@@ -62,45 +53,76 @@ CONVERSATIONQA_PROMPT = PromptTemplate(
     input_variables=["chat_history", "human_input", "context"], template=conversationqa_prompt_template
 )
 
-converseqa = load_qa_chain(
-    llm=llm, 
-    chain_type="stuff",  
-    prompt=CONVERSATIONQA_PROMPT
-)
 
-def splitDocument(file):
-    reader = PdfReader(file)
-    page_delimiter = '\n'
-    docu = ""
-    #exclude cover page and table of contexts
-    for page in reader.pages:
-        page_text = page.extract_text()
-        page_text += page_delimiter
-        docu += page_text
-    #split document using recursive splitter
-    text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size = 1000,
-        chunk_overlap  = 300,
-        length_function = len,
-    )
-    texts = text_splitter.split_text(docu)
-    return texts
+class chromaDB:
+    def __init__(self, chroma_client, collection_name, embeddings):
+        self.langchain_chroma = Chroma(
+            client=chroma_client,
+            collection_name=collection_name,
+            embedding_function=embeddings,
+        )
+        self.currID = 0
+    def splitDocument(self, file):
+        reader = PdfReader(file)
+        page_delimiter = '\n'
+        docu = ""
+        #exclude cover page and table of contexts
+        for page in reader.pages:
+            page_text = page.extract_text()
+            page_text += page_delimiter
+            docu += page_text
+        #split document using recursive splitter
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size = 1000,
+            chunk_overlap  = 300,
+            length_function = len,
+        )
+        texts = text_splitter.split_text(docu)
+        return texts
+    
+    def addToVectorStore(self, file, fileName):
+        texts = self.splitDocument(file)
+        for i in range(len(texts)):
+            self.langchain_chroma.add_texts(
+                ids=[str(self.currID)],
+                texts=[texts[i]],
+                metadatas=[{"source": fileName}]
+            )
+            self.currID += 1
 
-def addToVectorStore(file):
-    texts = splitDocument(file)
-    for i in range(len(texts)):
-        langchain_chroma.add_texts(texts[i])
+    def removeFromVectorStore(self, fileName):
+        documents = self.langchain_chroma.get(include=["ids", "metadatas"])
+        ids_to_delete = []
+        for i in range(len(documents["ids"])):
+            id = documents["ids"][i]
+            metadata = documents["metadatas"][i]
+            if metadata["source"] == fileName:
+                ids_to_delete.append(id)
 
-#generate function
-def generate(dialog):
-    input_query = dialog[-1][1]
-    chat_hist = ""
-    if len(dialog) > 1:
-        for line in dialog[:-1]:
-            chat_hist += f'{line[0]}: {line[1]}\n'
-    try:
-        chat_docs = langchain_chroma.similarity_search(input_query, k=1)
-        output = converseqa({"input_documents": chat_docs, "chat_history": chat_hist, "human_input": input_query})["output_text"]
-    except:
-        output = f'Error with model'
-    return output
+        self.langchain_chroma.delete(ids_to_delete)
+
+class QAChain:
+    def __init__(self, vectorStore, llm, prompt):
+        self.docsearch = vectorStore
+        self.qachain = load_qa_chain(
+            llm=llm, 
+            chain_type="stuff",  
+            prompt=prompt
+        )
+
+    def generate(self, dialog):
+        input_query = dialog["dialog"][-1] if len(dialog["dialog"]) > 0 else ""
+        chat_hist = ""
+        if len(dialog["dialog"]) > 1:
+            for line in dialog["dialog"][:-1]:
+                chat_hist += f'{line["sender"]}: {line["message"]}\n'
+        try:
+            chat_docs = self.docsearch.similarity_search(input_query, k=1)
+            output = self.qachain({"input_documents": chat_docs, "chat_history": chat_hist, "human_input": input_query})["output_text"]
+        except:
+            output = f'Error with model'
+        return output
+
+
+vectorStore = chromaDB(chroma_client, "chroma_collection", embeddings)
+QAChainModel = QAChain(vectorStore, llm, CONVERSATIONQA_PROMPT)

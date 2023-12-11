@@ -9,12 +9,19 @@ interface fileItem {
   type: string
 }
 
-function FileDisplay(prop: fileItem) {
+interface fileDisplayProps extends fileItem {
+  removeFunction: (fileName: string) => void 
+}
+
+function FileDisplay(prop: fileDisplayProps) {
   return (
     <div>
       <p>
         {prop.name}
       </p>
+      <button onClick={() => prop.removeFunction(prop.name)}>
+        Remove file
+      </button>
     </div>
   )
 }

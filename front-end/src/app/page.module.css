@@ -1,49 +1,38 @@
 .main {
   display: flex;
+  flex-direction: row;
+}
+
+.sideBar {
+  display:flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem;
+  top: 0;
+  height: 100vh;
+  position: sticky;
+  flex-basis: 25%;
+  background-color: rgb(35, 35, 35);
+  padding: 5px; 
 }
 
 .description {
-  display: inherit;
-  justify-content: inherit;
-  align-items: inherit;
-  font-size: 2rem;
-}
-
-.description a {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.description p {
-  position: relative;
-  margin: 0;
-  padding: 1rem;
+  font-size: 2rem;
+  position: sticky;  
 }
 
 .center {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   position: relative;
+  flex-basis: 75%;
   width: 100%;
-  padding: 1rem;
 }
 
 .fileLoader {
   display: flex;
+  flex-direction: column;
   position: relative;
-  flex-basis: 25%;
-}
-
-.chatbox {
-  display: flex;
-  position: relative;
-  flex-basis: 75%;
+  margin-left: 25px;
 }
 
 .chatbotLogo {
@@ -61,7 +50,21 @@
   flex-direction: column;
   align-items: stretch;
   position: relative;
-  width: 100%;
+  padding-left: 1rem;
+  flex-basis: 100%;
+  height: 100vh;
+}
+
+.messageList {
+  padding-bottom: 80px;
+}
+
+.chatInput {
+  display: block;
+  position: fixed;
+  bottom: 0;
+  padding-bottom: 30px;
+  width: 75%;
 }
 
 @keyframes rotate {
