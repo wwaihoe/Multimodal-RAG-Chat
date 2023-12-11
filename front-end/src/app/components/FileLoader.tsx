@@ -11,19 +11,14 @@ interface fileItem {
   type: string
 }
 
-const chatModelURL = ""
-const chatModelPort = ""
+const chatModelURL = "localhost"
+const chatModelPort = "8080"
 
 function FileLoader() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [uploadedFiles, setUploadedFiles] = useState<fileItem[] | []>([])
-  
-  const fileList = uploadedFiles.map((fileToDisplay) =>
-    <FileDisplay key={fileToDisplay.name} name={fileToDisplay.name} size={fileToDisplay.size} type={fileToDisplay.type}/>
-  )
 
   const handleFileChange = (event: React.ChangeEvent) => {
-    // Get the selected file from the input
     const target = event.target as HTMLInputElement
     if (target && target?.files?.[0]) {
       const file = target.files[0]
@@ -32,7 +27,6 @@ function FileLoader() {
   }
 
   const handleUpload = async() => {
-    // Handle the file upload logic
     if (selectedFile) {
       let sameName = false
       for (const uploadedFile of uploadedFiles) {
@@ -52,13 +46,14 @@ function FileLoader() {
       }
       if (!sameName) {
         console.log("Uploading file:", selectedFile)
-        let form = new FormData();
+        const form = new FormData();
         form.append("file", selectedFile);
         try{
-          let response = await fetch("${chatModelURL}:${chatModelPort}/upload", {
+          const response = await fetch(`http://${chatModelURL}:${chatModelPort}/upload`, {
                 method: 'POST',
                 body: form
-              });
+              })
+          console.log(response.status)
           if (response.ok) {
             console.log("Successfully uploaded file:", selectedFile)
             const newFile: fileItem = {"name": selectedFile.name, 
@@ -73,9 +68,9 @@ function FileLoader() {
         }
         catch(err) {
           console.log(err)
+          alert("Failed to upload file")
         }
       }
-      // Reset the selectedFile state after uploading
       setSelectedFile(null)
       const fileInput = document.getElementById('fileInput') as HTMLInputElement
       if (fileInput) {
@@ -88,28 +83,42 @@ function FileLoader() {
         loader.style.display = "none";
       }
     } else {
-      console.log('No file selected')
+      alert("No file selected")
     }
-    console.log(uploadedFiles)
   }
 
-  const handleDelete = (fileName: string) => {
-    if (uploadedFiles.length > 0) {
-      setUploadedFiles(uploadedFiles.filter(item => item.name !== fileName))
+  const handleDelete = async (fileName: string) => {
+    try {
+      const response = await fetch(`http://${chatModelURL}:${chatModelPort}/remove`, {
+        method: 'POST',
+        body: fileName
+      })
+      if (response.ok) {
+        setUploadedFiles(uploadedFiles.filter(item => item.name !== fileName))
+      }
+    }
+    catch(err) {
+      console.log(err)
     }
   }
+
+  const fileList = uploadedFiles.map((fileToDisplay) =>
+    <FileDisplay removeFunction={handleDelete} key={fileToDisplay.name} name={fileToDisplay.name} size={fileToDisplay.size} type={fileToDisplay.type}/>
+  )
 
   return (
-    <div>
+    <div className={styles.fileLoader}>
+      {uploadedFiles.length>0 && (
       <div>
         <h3>
-          Files in Knowledge Base
+          Files in knowledge base
         </h3>
         <ul>
           {fileList}
         </ul>
         <div id="loadingAnimation" className="loader"></div>
       </div>
+      )}
       <div>
         <h3>
           Upload text file for knowledge base

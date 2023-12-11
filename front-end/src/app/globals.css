@@ -6,7 +6,7 @@ body {
     Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   line-height: 1.6;
   font-size: 18px;
-  background-color: rgb(30, 30, 30);
+  background-color: rgb(10, 10, 10);
 }
 
 * {
@@ -54,7 +54,7 @@ input {
 button {
   vertical-align: middle;
   font-size: 16px;
-  background-color: transparent;
+  background-color: rgb(210, 150, 61);
   color: white;
   padding: 8px;
   border-radius: 8px;
