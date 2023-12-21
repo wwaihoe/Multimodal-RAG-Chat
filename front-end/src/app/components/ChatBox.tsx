@@ -17,7 +17,7 @@ interface dialog {
 }
 
 const chatModelURL = "localhost"
-const chatModelPort = "8080"
+const chatModelPort = "8001"
 
 
 function ChatBox() {
@@ -45,14 +45,14 @@ function ChatBox() {
           dialog: [...messages, newMessage]
         }
         setMessages(messages => [...messages, newMessage])
-        getResponse(currDialog)
         messageBox.value = ""
-        messageBox.disabled = false
-        sendMessageButton.disabled = false
+        getResponse(currDialog)
       }
     } 
 
     const getResponse = async(dialog: dialog) => {
+      const loader = document.getElementById("loaderGetResponse") as HTMLDivElement;
+      loader.style.display = "inline-block";
       try{
         const requestBody = JSON.stringify(dialog)
         const response = await fetch(`http://${chatModelURL}:${chatModelPort}/chat`, {
@@ -67,12 +67,21 @@ function ChatBox() {
             message: responseBody
           }
           setMessages(messages => [...messages, newResponse])
+          const messageBox = document.getElementById("inputMessage") as HTMLInputElement
+          const sendMessageButton = document.getElementById("sendMessageButton") as HTMLButtonElement
+          messageBox.disabled = false
+          sendMessageButton.disabled = false
         }      
       }
       catch(err) {
         console.log(err)
       }
+      loader.style.display = "none";
     } 
+
+    const handleRefreshChat = () => {
+      setMessages([])
+    }
 
     const handleKeyMessage = (event: any) => {
       if (event.keyCode === 13) { 
@@ -86,11 +95,24 @@ function ChatBox() {
 
     return (
       <div className={styles.chatBox}>
+        <div className={styles.refreshButton}>
+          <button id="refreshChatButton" onClick={handleRefreshChat}>
+            <Image
+              src="/refreshIcon.svg"
+              alt="refreshChat"
+              className={styles.refreshIcon}
+              width={20}
+              height={20}
+              priority
+            />
+          </button>
+        </div>
         <div className={styles.messageList}>
           <ul>
             {messageList}
           </ul>
           <div ref={messagesEndRef} />
+          <div id="loaderGetResponse" className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
         </div>
         <div className={styles.chatInput}>
           <input type='text' id='inputMessage' onKeyDown={handleKeyMessage}/>

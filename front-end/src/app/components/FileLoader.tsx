@@ -11,8 +11,8 @@ interface fileItem {
   type: string
 }
 
-const chatModelURL = "localhost"
-const chatModelPort = "8080"
+const retrievalModelURL = "localhost"
+const retrievalModelPort = "8002"
 
 function FileLoader() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -37,19 +37,15 @@ function FileLoader() {
         }
       }
       const uploadButton = document.getElementById("uploadButton") as HTMLButtonElement;
-      if (uploadButton) {
-        uploadButton.disabled = true
-      }
-      const loader = document.getElementById("loadingAnimation");
-      if (loader) {
-        loader.style.display = "block";
-      }
+      uploadButton.disabled = true
+      const loader = document.getElementById("loaderFileUpload") as HTMLDivElement;
+      loader.style.display = "inline-block";
       if (!sameName) {
         console.log("Uploading file:", selectedFile)
         const form = new FormData();
         form.append("file", selectedFile);
         try{
-          const response = await fetch(`http://${chatModelURL}:${chatModelPort}/upload`, {
+          const response = await fetch(`http://${retrievalModelURL}:${retrievalModelPort}/upload`, {
                 method: 'POST',
                 body: form
               })
@@ -73,15 +69,9 @@ function FileLoader() {
       }
       setSelectedFile(null)
       const fileInput = document.getElementById('fileInput') as HTMLInputElement
-      if (fileInput) {
-        fileInput.value = ''
-      }
-      if (uploadButton) {
-        uploadButton.disabled = false
-      }
-      if (loader) {
-        loader.style.display = "none";
-      }
+      fileInput.value = ''
+      uploadButton.disabled = false
+      loader.style.display = "none";
     } else {
       alert("No file selected")
     }
@@ -89,9 +79,16 @@ function FileLoader() {
 
   const handleDelete = async (fileName: string) => {
     try {
-      const response = await fetch(`http://${chatModelURL}:${chatModelPort}/remove`, {
+      const body = {
+        "fileName": fileName
+      }
+      const JSONBody = JSON.stringify(body)
+      const response = await fetch(`http://${retrievalModelURL}:${retrievalModelPort}/remove`, {
         method: 'POST',
-        body: fileName
+        headers: {
+          "Content-type": "application/json"
+        },
+        body: JSONBody
       })
       if (response.ok) {
         setUploadedFiles(uploadedFiles.filter(item => item.name !== fileName))
@@ -109,19 +106,19 @@ function FileLoader() {
   return (
     <div className={styles.fileLoader}>
       {uploadedFiles.length>0 && (
-      <div>
+      <div className={styles.fileList}>
         <h3>
           Files in knowledge base
         </h3>
         <ul>
           {fileList}
         </ul>
-        <div id="loadingAnimation" className="loader"></div>
       </div>
       )}
+      <div id="loaderFileUpload" className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
       <div>
         <h3>
-          Upload text file for knowledge base
+          Upload PDF file to knowledge base
         </h3>
         <label htmlFor="fileInput" className="custom-file-input">
           Choose file 

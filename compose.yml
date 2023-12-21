@@ -1,0 +1,40 @@
+networks:
+  bridgenetwork: #define bridge network that connects containers together internally
+    driver: bridge
+
+services:
+  front-end: #web application front-end
+    build: #build docker image using Dockerfile in front-end directory
+      context: ./front-end
+    environment: #set NODE_ENV environment variable to "production"
+      NODE_ENV: production
+    networks: #connect service to bridgenetwork
+      - bridgenetwork
+    ports: #map host port 8000 to port 8000 of webapp front end service
+      - 8000:8000
+    depends_on: #starts service after chat-model
+      - chat-model
+
+  chat-model: #chat-model
+    build: #build docker image using Dockerfile in chat-model directory
+      context: ./chat-model
+    networks: #connect service to bridgenetwork
+      - bridgenetwork
+    ports: #map host port 8001 to port 8001 of chat-model service
+      - 8001:8001
+    depends_on: #starts service after retrieval-model
+      - retrieval-model
+    environment: #set HuggingFace Access Token environment variable
+      - HUGGINGFACEHUB_API_TOKEN={INSERT TOKEN HERE}
+
+  retrieval-model: #retrieval-model
+    build: #build docker image using Dockerfile in retrieval-model directory
+      context: ./retrieval-model
+    networks: #connect service to bridgenetwork
+      - bridgenetwork
+    ports: #map host port 8002 to port 8002 of retrieval-model service
+      - 8002:8002
+    volumes: #create volume "/data" in container that is mapped to "/data" in local directory of host machine that persists data
+      - ./vectorstore:/vectorstore
+    environment: #set HuggingFace Access Token environment variable
+      - HUGGINGFACEHUB_API_TOKEN={INSERT TOKEN HERE}

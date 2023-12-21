@@ -31,13 +31,26 @@
 .fileLoader {
   display: flex;
   flex-direction: column;
+  align-items: stretch;
   position: relative;
-  margin-left: 25px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  width: 100%
 }
 
-.chatbotLogo {
+.chatbotLogo{
   filter: invert(1);
   position: relative;
+}
+
+.userIcon{
+  filter: invert(1);
+  position: relative;
+  margin: 10px;
+}
+
+.refreshIcon {
+  filter: invert(1);
 }
 
 .sendMessageIcon {
@@ -51,12 +64,29 @@
   align-items: stretch;
   position: relative;
   padding-left: 1rem;
+  padding-right: 1rem;
   flex-basis: 100%;
   height: 100vh;
 }
 
 .messageList {
   padding-bottom: 80px;
+  padding-left: 50px;
+}
+
+.aIMessageDiv, .humanMessageDiv {
+  display: flex;
+  flex-direction: row;
+}
+
+.aIMessage {
+  color:white;
+  padding-left: 5px;
+}
+
+.humanMessage {
+  color:ivory;
+  padding-left: 5px;
 }
 
 .chatInput {
@@ -67,11 +97,34 @@
   width: 75%;
 }
 
-@keyframes rotate {
-  from {
-    transform: rotate(360deg);
-  }
-  to {
-    transform: rotate(0deg);
-  }
+.refreshButton {
+  display: block;
+  position: sticky;
+  top: 15px;
+}
+
+.fileList {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  position: relative;
+  width: 100%
+}
+
+.fileDisplay {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  width: 100%;
+}
+
+.fileName {
+  width: 100%;
+  text-align: center;
+}
+
+.removeFileButton {
+  margin-left: 5px;
+  width: 27%;
+  height: 40px;
 }
