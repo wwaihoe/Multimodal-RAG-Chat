@@ -15,12 +15,12 @@ interface fileDisplayProps extends fileItem {
 
 function FileDisplay(prop: fileDisplayProps) {
   return (
-    <div>
-      <p>
+    <div className={styles.fileDisplay}>
+      <p className={styles.fileName}>
         {prop.name}
       </p>
-      <button onClick={() => prop.removeFunction(prop.name)}>
-        Remove file
+      <button className={styles.removeFileButton} onClick={() => prop.removeFunction(prop.name)}>
+        Remove
       </button>
     </div>
   )
