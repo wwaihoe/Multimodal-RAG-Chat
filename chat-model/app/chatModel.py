@@ -19,7 +19,7 @@ if torch.cuda.is_available():
 else:
     device = 'cpu'
 
-repo_id = "mistralai/Mistral-7B-v0.1"
+repo_id = "openchat/openchat_3.5"
 
 llm = HuggingFaceHub(repo_id=repo_id, model_kwargs={"temperature":0.2,"max_new_tokens":500, "max_time":None , "num_return_sequences":1, "repetition_penalty":10})
 #llm = OpenAI()

@@ -22,6 +22,9 @@ app.add_middleware(
 class FileName(BaseModel):
     fileName: str
 
+class FileList(BaseModel):
+    files: list
+
 class RetrievalQuery(BaseModel):
     query: str
 
@@ -33,9 +36,18 @@ class RetrievalDoc(BaseModel):
 def read_root():
     return {"Server": "On"}
 
+@app.get("/load")
+def loadFiles():
+    fileDict = retrievalModel.vectorStore.loadFiles()
+    print(fileDict)
+    files = []
+    for fileName, fileSize in fileDict.items():
+        files.append({"name": fileName, "size": fileSize})
+    return FileList(files=files)
+
 @app.post("/upload")
 def uploadDocument(file: UploadFile = File(...)):
-    retrievalModel.vectorStore.addToVectorStore(file.file, file.filename)
+    retrievalModel.vectorStore.addToVectorStore(file.file, file.filename, file.size)
     print("Uploaded: ", file.filename)
     return 
 
