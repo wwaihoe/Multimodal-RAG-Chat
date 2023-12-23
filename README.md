@@ -16,7 +16,7 @@ The web application consists of 3 Docker containers which are run together using
 ![Term Project System Workflow Diagram](https://github.com/wwaihoe/RAG-Chat/assets/91514179/ac92fe05-2b28-4e42-b64c-905cd0abfbba)
 
 Demo
-https://github.com/wwaihoe/RAG-Chat/assets/91514179/402de91c-46ff-4bd1-ac62-e65a03ae9fb2
+https://github.com/wwaihoe/RAG-Chat/assets/91514179/f2faf433-501b-471d-b5e3-b9ac086db65f
 
 ### Docker Services (Containers)
 1. front-end
