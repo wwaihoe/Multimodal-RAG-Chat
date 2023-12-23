@@ -112,7 +112,9 @@ function ChatBox() {
             {messageList}
           </ul>
           <div ref={messagesEndRef} />
-          <div id="loaderGetResponse" className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+          <div id="loaderGetResponseDiv">
+            <div id="loaderGetResponse" className="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+          </div>
         </div>
         <div className={styles.chatInput}>
           <input type='text' id='inputMessage' onKeyDown={handleKeyMessage}/>

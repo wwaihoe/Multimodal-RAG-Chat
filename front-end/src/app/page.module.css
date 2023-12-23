@@ -9,7 +9,7 @@
   top: 0;
   height: 100vh;
   position: sticky;
-  flex-basis: 25%;
+  flex-basis: 23%;
   background-color: rgb(35, 35, 35);
   padding: 5px; 
 }
@@ -24,7 +24,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  flex-basis: 75%;
+  flex-basis: 77%;
   width: 100%;
 }
 
@@ -73,12 +73,13 @@
 .messageList {
   padding-bottom: 80px;
   padding-left: 50px;
-  padding-right: 150px;
+  padding-right: 13%;
 }
 
 .aIMessageDiv, .humanMessageDiv {
   display: flex;
   flex-direction: row;
+  overflow-wrap: anywhere;
 }
 
 .aIMessage {
@@ -96,6 +97,7 @@
   position: fixed;
   bottom: 0;
   padding-bottom: 30px;
+  padding-left: 100px;
   width: 75%;
 }
 

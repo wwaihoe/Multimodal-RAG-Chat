@@ -24,16 +24,15 @@ repo_id = "openchat/openchat_3.5"
 llm = HuggingFaceHub(repo_id=repo_id, model_kwargs={"max_new_tokens":500, "max_time":None , "num_return_sequences":1})
 #llm = OpenAI()
 
-conversationqa_prompt_template = """You are an AI chatbot having a conversation with a human.
+conversationqa_prompt_template = """You are an assistant having a conversation with a human.
 Use the following context to answer the human's question. 
-Provide a clear and concise answer.
+Provide a single clear and concise response.
 If the context does not provide sufficient context to answer the question, say "Sorry, I do not have enough knowledge to answer the question.".
 
 Context:
 {context}
 
-{chat_history}Human: {human_input}
-AI: """
+{chat_history}Human: {human_input}<|end_of_turn|>Answer: """
 
 CONVERSATIONQA_PROMPT = ChatPromptTemplate.from_template(template=conversationqa_prompt_template)
 
@@ -48,7 +47,9 @@ class QAChain:
         chat_hist = ""
         if len(dialog["dialog"]) > 1:
             for line in dialog["dialog"][:-1]:
-                chat_hist += f'{line["sender"]}: {line["message"]}\n'
+                #chat_hist += f'{line["sender"]}: {line["message"]}\n'
+                #openchat template
+                chat_hist += f'{line["sender"]}: {line["message"]}<|end_of_turn|>'
         try:
             res = requests.post(f"{self.vectorStoreIP}/retrieve", json={"query":  input_query})
             chat_docs = res.json()["doc"]
