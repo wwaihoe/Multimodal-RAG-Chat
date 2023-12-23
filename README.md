@@ -39,6 +39,7 @@ Web Frameworks:<br>
 Embedding Model:<br>
 HuggingFace - thenlper/gte-base (loaded locally)
 <br>
+<br>
 LLM APIs:<br>
 OpenAI API - gpt 3.5 (Paid)<br>
 HuggingFace Inference API - openchat/openchat_3.5 (Free)
