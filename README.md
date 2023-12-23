@@ -14,21 +14,21 @@ The web application consists of 3 Docker containers which are run together using
 
 ### Docker Services (Containers)
 1. front-end
-- User interface
+  - User interface
 2. chat-model
-- Generates text response using LLM and document retrieved from retrieval-model
+  - Generates text response using LLM and document retrieved from retrieval-model
 3. retrieval-model
-- Builds vector store from user documents
-- Retrieves relevant documents for knowledge augmented generation by chat-model
+  - Builds vector store from user documents
+  - Retrieves relevant documents for knowledge augmented generation by chat-model
 
 ### Frameworks and Models
 Web Frameworks:<br>
 1. front-end
-- Next.js, React
+  - Next.js, React
 2. chat-model
-- HuggingFace, LangChain, FastAPI, Uvicorn
+  - HuggingFace, LangChain, FastAPI, Uvicorn
 3. retrieval-model
-- ChromaDB, PyPDF2, FastAPI, Uvicorn
+  - ChromaDB, PyPDF2, FastAPI, Uvicorn
 <br>
 LLM APIs:<br>
 OpenAI API - gpt 3.5 (Paid)<br>
