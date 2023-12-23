@@ -5,8 +5,7 @@ import React, { useState } from 'react'
 
 interface fileItem {
   name: string,
-  size: number,
-  type: string
+  size: number
 }
 
 interface fileDisplayProps extends fileItem {

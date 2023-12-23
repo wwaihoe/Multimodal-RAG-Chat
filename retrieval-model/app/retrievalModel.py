@@ -37,6 +37,8 @@ class chromaDB:
             embedding_function=embeddings,
         )
         self.currID = 0
+        self.hashmapIDs = {}
+        self.hashmapSizes = {}
     def splitDocument(self, file):
         reader = PdfReader(file)
         page_delimiter = '\n'
@@ -55,28 +57,31 @@ class chromaDB:
         texts = text_splitter.split_text(docu)
         return texts
     
-    def addToVectorStore(self, file, fileName):
+    def addToVectorStore(self, file, fileName, fileSize):
         texts = self.splitDocument(file)
+        self.hashmapIDs[fileName] = []
+        self.hashmapSizes[fileName] = fileSize
         for i in range(len(texts)):
             self.langchain_chroma.add_texts(
                 ids=[str(self.currID)],
                 texts=[texts[i]],
                 metadatas=[{"source": fileName}]
             )
+            self.hashmapIDs[fileName].append(str(self.currID))
             self.currID += 1
     
+    def loadFiles(self):
+        return self.hashmapSizes
+
     def similarity_search(self, input):
-        return self.langchain_chroma.similarity_search(input, k=1)
+        docs = self.langchain_chroma.similarity_search(input, k=1)
+        return docs[0].page_content
 
     def removeFromVectorStore(self, fileName):
         documents = self.langchain_chroma.get(include=["metadatas"])
-        ids_to_delete = []
-        for i in range(len(documents["ids"])):
-            id = documents["ids"][i]
-            metadata = documents["metadatas"][i]
-            if metadata["source"] == fileName:
-                ids_to_delete.append(id)
-
+        ids_to_delete = self.hashmapIDs[fileName]
+        self.hashmapIDs.pop(fileName)
+        self.hashmapSizes.pop(fileName)
         self.langchain_chroma.delete(ids_to_delete)
 
 

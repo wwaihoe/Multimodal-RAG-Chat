@@ -26,6 +26,7 @@ services:
       - retrieval-model
     environment: #set HuggingFace Access Token environment variable
       - HUGGINGFACEHUB_API_TOKEN={INSERT TOKEN HERE}
+      #OPENAI_API_KEY={INSERT KEY HERE}
 
   retrieval-model: #retrieval-model
     build: #build docker image using Dockerfile in retrieval-model directory
@@ -38,3 +39,4 @@ services:
       - ./vectorstore:/vectorstore
     environment: #set HuggingFace Access Token environment variable
       - HUGGINGFACEHUB_API_TOKEN={INSERT TOKEN HERE}
+      #OPENAI_API_KEY={INSERT KEY HERE}

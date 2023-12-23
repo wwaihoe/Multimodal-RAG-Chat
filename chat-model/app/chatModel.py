@@ -19,13 +19,15 @@ if torch.cuda.is_available():
 else:
     device = 'cpu'
 
-repo_id = "mistralai/Mistral-7B-v0.1"
+repo_id = "openchat/openchat_3.5"
 
-llm = HuggingFaceHub(repo_id=repo_id, model_kwargs={"temperature":0.2,"max_new_tokens":500, "max_time":None , "num_return_sequences":1, "repetition_penalty":10})
+llm = HuggingFaceHub(repo_id=repo_id, model_kwargs={"max_new_tokens":500, "max_time":None , "num_return_sequences":1})
 #llm = OpenAI()
 
-conversationqa_prompt_template = """You are a chatbot having a conversation with a human.
-Given the following context, answer the question. If the context does not provide sufficient context to answer the question, say "Sorry, I do not have enough knowledge to answer the question.".
+conversationqa_prompt_template = """You are an AI chatbot having a conversation with a human.
+Use the following context to answer the human's question. 
+Provide a clear and concise answer.
+If the context does not provide sufficient context to answer the question, say "Sorry, I do not have enough knowledge to answer the question.".
 
 Context:
 {context}

@@ -22,6 +22,9 @@ app.add_middleware(
 class FileName(BaseModel):
     fileName: str
 
+class FileList(BaseModel):
+    files: list
+
 class RetrievalQuery(BaseModel):
     query: str
 
@@ -33,9 +36,17 @@ class RetrievalDoc(BaseModel):
 def read_root():
     return {"Server": "On"}
 
+@app.get("/load")
+def loadFiles():
+    fileDict = retrievalModel.vectorStore.loadFiles()
+    files = []
+    for fileName, fileSize in fileDict.items():
+        files.append({"name": fileName, "size": fileSize})
+    return FileList(files=files)
+
 @app.post("/upload")
 def uploadDocument(file: UploadFile = File(...)):
-    retrievalModel.vectorStore.addToVectorStore(file.file, file.filename)
+    retrievalModel.vectorStore.addToVectorStore(file.file, file.filename, file.size)
     print("Uploaded: ", file.filename)
     return 
 
@@ -48,8 +59,7 @@ def removeDocument(fileName: FileName):
 @app.post("/retrieve")
 def retrieveDocument(retrievalQuery: RetrievalQuery) -> RetrievalDoc:
     doc = retrievalModel.vectorStore.similarity_search(retrievalQuery.query)
-    docText = str(doc[0])
-    return RetrievalDoc(doc=docText)
+    return RetrievalDoc(doc=doc)
 
 if __name__ == '__main__':
     uvicorn.run(app, port=8002, host='0.0.0.0')

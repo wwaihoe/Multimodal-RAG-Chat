@@ -58,6 +58,7 @@ button {
   color: white; 
   padding: 8px;
   border-radius: 8px;
+  cursor: pointer;
 }
 
 input[type=text] {
@@ -68,6 +69,7 @@ input[type=text] {
   padding: 1rem;
   background-color: rgb(50, 50, 50);
   border-radius: 8px;
+  font-size: 16px;
 }
 
 input[type="file"] {

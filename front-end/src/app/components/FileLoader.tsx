@@ -1,14 +1,13 @@
 "use client"
 
 import styles from '../page.module.css'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import FileDisplay from './FileDisplay'
 
 interface fileItem {
   name: string,
-  size: number,
-  type: string
+  size: number
 }
 
 const retrievalModelURL = "localhost"
@@ -17,6 +16,34 @@ const retrievalModelPort = "8002"
 function FileLoader() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [uploadedFiles, setUploadedFiles] = useState<fileItem[] | []>([])
+
+  useEffect(() => {
+    loadFiles()
+  }, [])
+
+  const loadFiles = async() => {
+    try{
+      const response = await fetch(`http://${retrievalModelURL}:${retrievalModelPort}/load`, {
+            method: 'GET'
+          })
+      if (response.ok) {
+        console.log("Successfully loaded files")
+        const responseJSON = await response.json()
+        const fileList = responseJSON.files
+        console.log(fileList)
+        if (fileList.length > 0) {
+          setUploadedFiles(fileList)
+        }
+      }
+      else {
+        alert("Failed to load files")
+      }
+    }
+    catch(err) {
+      console.log(err)
+      alert("Failed to load files")
+    }
+  } 
 
   const handleFileChange = (event: React.ChangeEvent) => {
     const target = event.target as HTMLInputElement
@@ -49,12 +76,11 @@ function FileLoader() {
                 method: 'POST',
                 body: form
               })
-          console.log(response.status)
           if (response.ok) {
             console.log("Successfully uploaded file:", selectedFile)
-            const newFile: fileItem = {"name": selectedFile.name, 
-              "size": selectedFile.size,
-              "type": selectedFile.type
+            const newFile: fileItem = {
+              "name": selectedFile.name, 
+              "size": selectedFile.size
             }
             setUploadedFiles([...uploadedFiles, newFile])
           }
@@ -100,7 +126,7 @@ function FileLoader() {
   }
 
   const fileList = uploadedFiles.map((fileToDisplay) =>
-    <FileDisplay removeFunction={handleDelete} key={fileToDisplay.name} name={fileToDisplay.name} size={fileToDisplay.size} type={fileToDisplay.type}/>
+    <FileDisplay removeFunction={handleDelete} key={fileToDisplay.name} name={fileToDisplay.name} size={fileToDisplay.size}/>
   )
 
   return (

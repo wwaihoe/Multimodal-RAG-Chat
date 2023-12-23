@@ -44,10 +44,11 @@
 }
 
 .userIcon{
-  filter: invert(1);
+  filter: invert(92%) sepia(83%) saturate(182%) hue-rotate(312deg) brightness(107%) contrast(106%);
   position: relative;
   margin: 10px;
-}
+  color: rgb(255, 255, 240);
+} 
 
 .refreshIcon {
   filter: invert(1);
@@ -72,6 +73,7 @@
 .messageList {
   padding-bottom: 80px;
   padding-left: 50px;
+  padding-right: 150px;
 }
 
 .aIMessageDiv, .humanMessageDiv {
@@ -114,7 +116,7 @@
 .fileDisplay {
   display: flex;
   flex-direction: row;
-  align-items: stretch;
+  align-items: center;
   width: 100%;
 }
 
