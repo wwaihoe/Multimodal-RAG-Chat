@@ -39,7 +39,6 @@ def read_root():
 @app.get("/load")
 def loadFiles():
     fileDict = retrievalModel.vectorStore.loadFiles()
-    print(fileDict)
     files = []
     for fileName, fileSize in fileDict.items():
         files.append({"name": fileName, "size": fileSize})
@@ -60,8 +59,7 @@ def removeDocument(fileName: FileName):
 @app.post("/retrieve")
 def retrieveDocument(retrievalQuery: RetrievalQuery) -> RetrievalDoc:
     doc = retrievalModel.vectorStore.similarity_search(retrievalQuery.query)
-    docText = str(doc[0])
-    return RetrievalDoc(doc=docText)
+    return RetrievalDoc(doc=doc)
 
 if __name__ == '__main__':
     uvicorn.run(app, port=8002, host='0.0.0.0')

@@ -74,7 +74,8 @@ class chromaDB:
         return self.hashmapSizes
 
     def similarity_search(self, input):
-        return self.langchain_chroma.similarity_search(input, k=1)
+        docs = self.langchain_chroma.similarity_search(input, k=1)
+        return docs[0].page_content
 
     def removeFromVectorStore(self, fileName):
         documents = self.langchain_chroma.get(include=["metadatas"])

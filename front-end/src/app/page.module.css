@@ -73,6 +73,7 @@
 .messageList {
   padding-bottom: 80px;
   padding-left: 50px;
+  padding-right: 150px;
 }
 
 .aIMessageDiv, .humanMessageDiv {

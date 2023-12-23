@@ -25,7 +25,7 @@ services:
     depends_on: #starts service after retrieval-model
       - retrieval-model
     environment: #set HuggingFace Access Token environment variable
-      - HUGGINGFACEHUB_API_TOKEN={INSERT KEY HERE}
+      - HUGGINGFACEHUB_API_TOKEN={INSERT TOKEN HERE}
       #OPENAI_API_KEY={INSERT KEY HERE}
 
   retrieval-model: #retrieval-model
@@ -38,5 +38,5 @@ services:
     volumes: #create volume "/data" in container that is mapped to "/data" in local directory of host machine that persists data
       - ./vectorstore:/vectorstore
     environment: #set HuggingFace Access Token environment variable
-      - HUGGINGFACEHUB_API_TOKEN={INSERT KEY HERE}
+      - HUGGINGFACEHUB_API_TOKEN={INSERT TOKEN HERE}
       #OPENAI_API_KEY={INSERT KEY HERE}
