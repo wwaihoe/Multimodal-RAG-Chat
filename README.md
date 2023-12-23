@@ -16,7 +16,7 @@ Demo
 https://github.com/wwaihoe/RAG-Chat/assets/91514179/f2faf433-501b-471d-b5e3-b9ac086db65f
 
 ## Microservices Architecture
-The web application consists of 3 Docker containers which are run together using Docker Compose. Each of the services run on each container are loosely coupled and modular, with each service having a well-defined and focused scope and function. This ensures that the application is less prone to complete failure and allows updates to the application in the future to be more seamless.
+The web application consists of 3 Docker containers which are run together using docker compose. Each of the services run on each container are loosely coupled and modular, with each service having a well-defined and focused scope and function. This ensures that the application is less prone to complete failure with the benefit of fault isolation, whereby a failure in one service would not bring down the entire application The independent deployments of the services also allows updates to the application in the future to be more seamless. Lastly, there is an added benefit of scalability as each service can be scaled up independently based on demand, allowing for more efficient use of resources.
 
 ### Docker Services (Containers)
 1. front-end
