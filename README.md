@@ -9,14 +9,14 @@ The chat model also has a memory feature and keeps track of the chat history of 
 2. Run command `docker compose up --build` to build and run containers.
 3. Upon completion, RAG Chat will run on localhost:8000
 
-## Microservices Architecture
-The web application consists of 3 Docker containers which are run together using Docker Compose. Each of the services run on each container are loosely coupled and modular, with each service having a well-defined and focused scope and function. This ensures that the application is less prone to complete failure and allows updates to the application in the future to be more seamless.
-
 ## Flow of Events
 ![Term Project System Workflow Diagram](https://github.com/wwaihoe/RAG-Chat/assets/91514179/ac92fe05-2b28-4e42-b64c-905cd0abfbba)
 
 Demo
 https://github.com/wwaihoe/RAG-Chat/assets/91514179/f2faf433-501b-471d-b5e3-b9ac086db65f
+
+## Microservices Architecture
+The web application consists of 3 Docker containers which are run together using Docker Compose. Each of the services run on each container are loosely coupled and modular, with each service having a well-defined and focused scope and function. This ensures that the application is less prone to complete failure and allows updates to the application in the future to be more seamless.
 
 ### Docker Services (Containers)
 1. front-end
