@@ -12,6 +12,12 @@ The chat model also has a memory feature and keeps track of the chat history of 
 ## Microservices Architecture
 The web application consists of 3 Docker containers which are run together using Docker Compose. Each of the services run on each container are loosely coupled and modular, with each service having a well-defined and focused scope and function. This ensures that the application is less prone to complete failure and allows updates to the application in the future to be more seamless.
 
+## Flow of Events
+![Term Project System Workflow Diagram](https://github.com/wwaihoe/RAG-Chat/assets/91514179/ac92fe05-2b28-4e42-b64c-905cd0abfbba)
+
+Demo
+https://github.com/wwaihoe/RAG-Chat/assets/91514179/402de91c-46ff-4bd1-ac62-e65a03ae9fb2
+
 ### Docker Services (Containers)
 1. front-end
   - User interface
@@ -34,6 +40,5 @@ LLM APIs:<br>
 OpenAI API - gpt 3.5 (Paid)<br>
 HuggingFace Inference API - openchat/openchat_3.5 (Free)
 
-## Flow of Events
-![Term Project System Workflow Diagram](https://github.com/wwaihoe/RAG-Chat/assets/91514179/ac92fe05-2b28-4e42-b64c-905cd0abfbba)
+
 
