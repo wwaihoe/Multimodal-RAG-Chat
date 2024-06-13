@@ -2,9 +2,7 @@ from fastapi import FastAPI, UploadFile, File, Request, Response
 from fastapi.responses import PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from pydantic import BaseModel
 import chatModel
-import asyncio
 
 app = FastAPI()
 
