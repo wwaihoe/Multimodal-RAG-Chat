@@ -5,7 +5,7 @@ The chat model also has a memory feature and keeps track of the chat history of 
 ![RAGChat screenshot](https://github.com/wwaihoe/RAG-Chat/assets/91514179/06512f90-5a81-4bf4-bd85-652ce3517e98)
 
 ## How to run
-1. Update Docker Compose file with HuggingFace API Token or OpenAI API key (requires switching to OpenAI llm in chatModel.py).
+1. Download GGUF models from [Hugging Face](https://huggingface.co/models) and put them in `chat-model/models`
 2. Run command `docker compose up --build` to build and run containers.
 3. Upon completion, RAG Chat will run on localhost:8000
 
@@ -32,17 +32,16 @@ Web Frameworks:<br>
 1. front-end
   - Next.js, React
 2. chat-model
-  - HuggingFace, LangChain, FastAPI, Uvicorn
+  - llama.cpp, LangChain, FastAPI, Uvicorn
 3. retrieval-model
   - ChromaDB, PyPDF2, FastAPI, Uvicorn
 <br>
 Embedding Model:<br>
-HuggingFace - thenlper/gte-base (loaded locally)
+[sentence-transformers/all-mpnet-base-v2](https://huggingface.co/sentence-transformers/all-mpnet-base-v2)
 <br>
 <br>
-LLM APIs:<br>
-OpenAI API - gpt 3.5 (Paid)<br>
-HuggingFace Inference API - openchat/openchat_3.5 (Free)
+LLMs Tested:<br>
+[Meta-Llama-3-8B-Instruct-GGUF](https://huggingface.co/bartowski/Meta-Llama-3-8B-Instruct-GGUF)
 
 
 
