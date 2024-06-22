@@ -20,21 +20,21 @@ The web application consists of 3 Docker containers which are run together using
 
 ### Docker Services (Containers)
 1. front-end
-  - User interface
-2. chat-model
-  - Generates text response using LLM and document retrieved from retrieval-model
+   - User interface
+3. chat-model
+   - Generates text response using LLM and document retrieved from retrieval-model
 3. retrieval-model
-  - Builds vector store from user documents
-  - Retrieves relevant documents for knowledge augmented generation by chat-model
+   - Builds vector store from user documents
+   - Retrieves relevant documents for knowledge augmented generation by chat-model
 
 ### Frameworks and Models
 Web Frameworks:<br>
 1. front-end
-  - Next.js, React
-2. chat-model
-  - llama.cpp, LangChain, FastAPI, Uvicorn
+   - Next.js, React
+3. chat-model
+   - llama.cpp, LangChain, FastAPI, Uvicorn
 3. retrieval-model
-  - ChromaDB, PyPDF2, FastAPI, Uvicorn
+   - ChromaDB, PyPDF2, FastAPI, Uvicorn
 <br>
 Embedding Model:<br>
 ![sentence-transformers/all-mpnet-base-v2](https://huggingface.co/sentence-transformers/all-mpnet-base-v2)
