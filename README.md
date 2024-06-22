@@ -10,7 +10,7 @@ The chat model also has a memory feature and keeps track of the chat history of 
 3. Upon completion, RAG Chat will run on localhost:8000
 
 ## Flow of Events
-![Term Project System Workflow Diagram](https://github.com/wwaihoe/RAG-Chat/assets/91514179/ac92fe05-2b28-4e42-b64c-905cd0abfbba)
+![System Workflow Diagram](https://github.com/wwaihoe/RAG-Chat/assets/91514179/613c29d5-a22d-4ff5-a56d-b3ec7f90b3cb)
 
 Demo
 https://github.com/wwaihoe/RAG-Chat/assets/91514179/f2faf433-501b-471d-b5e3-b9ac086db65f
@@ -37,11 +37,11 @@ Web Frameworks:<br>
   - ChromaDB, PyPDF2, FastAPI, Uvicorn
 <br>
 Embedding Model:<br>
-[sentence-transformers/all-mpnet-base-v2](https://huggingface.co/sentence-transformers/all-mpnet-base-v2)
+![sentence-transformers/all-mpnet-base-v2](https://huggingface.co/sentence-transformers/all-mpnet-base-v2)
 <br>
 <br>
 LLMs Tested:<br>
-[Meta-Llama-3-8B-Instruct-GGUF](https://huggingface.co/bartowski/Meta-Llama-3-8B-Instruct-GGUF)
+![Meta-Llama-3-8B-Instruct-GGUF](https://huggingface.co/bartowski/Meta-Llama-3-8B-Instruct-GGUF)
 
 
 
