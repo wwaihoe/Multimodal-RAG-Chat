@@ -28,13 +28,13 @@ The web application consists of 3 Docker containers which are run together using
    - Retrieves relevant documents for knowledge augmented generation by chat-model
 
 ### Frameworks and Models
-Web Frameworks:<br>
+Frameworks:<br>
 1. front-end
    - Next.js, React
 3. chat-model
    - llama.cpp, LangChain, FastAPI, Uvicorn
 3. retrieval-model
-   - ChromaDB, PyPDF2, FastAPI, Uvicorn
+   - ChromaDB, SentenceTransformers, PyPDF2, FastAPI, Uvicorn
 <br>
 Embedding Model:<br>
 ![sentence-transformers/all-mpnet-base-v2](https://huggingface.co/sentence-transformers/all-mpnet-base-v2)
