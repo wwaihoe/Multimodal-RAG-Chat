@@ -2,14 +2,9 @@ import os
 import requests
 import json
 
+from LLM import LlamaCPP
 
-from langchain.prompts import ChatPromptTemplate
-#for HuggingFace
-from langchain.llms import HuggingFaceHub
-#for OpenAI
-from langchain.llms import OpenAI
-
-retrievalURL = "retrieval-model"
+retrievalName = "retrieval-model"
 retrievalPort = "8002"
 
 import torch
@@ -19,43 +14,53 @@ if torch.cuda.is_available():
 else:
     device = 'cpu'
 
-repo_id = "openchat/openchat_3.5"
 
-llm = HuggingFaceHub(repo_id=repo_id, model_kwargs={"max_new_tokens":500, "max_time":None , "num_return_sequences":1})
-#llm = OpenAI()
-
-conversationqa_prompt_template = """You are an assistant having a conversation with a human.
-Use the following context to answer the human's question. 
-Provide a single clear and concise response.
-If the context does not provide sufficient context to answer the question, say "Sorry, I do not have enough knowledge to answer the question.".
-
-Context:
-{context}
-
-{chat_history}Human: {human_input}<|end_of_turn|>Answer: """
-
-CONVERSATIONQA_PROMPT = ChatPromptTemplate.from_template(template=conversationqa_prompt_template)
 
 
 class QAChain:
-    def __init__(self, vectorStoreIP, llm, prompt):
-        self.vectorStoreIP = vectorStoreIP
-        self.chain = prompt | llm
+    def __init__(self, vectorStoreURL, llm):
+        self.vectorStoreURL = vectorStoreURL
+        self.llm = llm
+        
 
     def generate(self, dialog):
         input_query = dialog["dialog"][-1]["message"] if len(dialog["dialog"]) > 0 else ""
-        chat_hist = ""
+        chat_history = ""
         if len(dialog["dialog"]) > 1:
             for line in dialog["dialog"][:-1]:
                 #chat_hist += f'{line["sender"]}: {line["message"]}\n'
-                #openchat template
-                chat_hist += f'{line["sender"]}: {line["message"]}<|end_of_turn|>'
+
+                #llama3 template
+                chat_history += f"""<|start_header_id|>{line["sender"]}<|end_header_id|>
+                
+                {line["message"]}<|eot_id|>
+                """
         try:
-            res = requests.post(f"{self.vectorStoreIP}/retrieve", json={"query":  input_query})
-            chat_docs = res.json()["doc"]
-            output = self.chain.invoke({"context": chat_docs, "chat_history": chat_hist, "human_input": input_query})
+            res = requests.post(f"{self.vectorStoreURL}/retrieve", json={"query":  input_query})
+            context = res.json()["doc"]
+            conversationqa_prompt_template = f"""<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+            You are a helpful AI assistant having a conversation with a human<|eot_id|>
+            <|start_header_id|>user<|end_header_id|>
+
+            Use the following context to answer the human's question. Provide a single clear and concise response. If the context does not provide sufficient context to answer the question, say "Sorry, I do not have enough knowledge to answer the question.". 
+            Context: {context}. 
+            Chat history: {chat_history}.<|eot_id|>
+            <|start_header_id|>user<|end_header_id|>
+                
+            {input_query}<|eot_id|> 
+            <|start_header_id|>assistant<|end_header_id|>
+
+            """
+
+            output = self.llm.generate(conversationqa_prompt_template)
         except:
             output = f'Error with model'
         return output
 
-QAChainModel = QAChain(f"http://{retrievalURL}:{retrievalPort}", llm, CONVERSATIONQA_PROMPT)
+
+
+# Load Llama 3 8b with default settings
+llm = LlamaCPP(model_dir="../models/Meta-Llama-3-8B-Instruct-Q4_K_M.gguf")
+
+QAChainModel = QAChain(f"http://{retrievalName}:{retrievalPort}", llm)

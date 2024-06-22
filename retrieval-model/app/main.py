@@ -1,12 +1,20 @@
 from fastapi import FastAPI, UploadFile, File, Request, Response
 from fastapi.responses import PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 import uvicorn
 from pydantic import BaseModel
 import json
 import retrievalModel
 
-app = FastAPI()
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    yield
+    retrievalModel.vectorStore.chroma_client.delete_collection(name="my_collection")
+
+app = FastAPI(lifespan=lifespan)
 
 origins = ["*"]
 
@@ -60,6 +68,7 @@ def removeDocument(fileName: FileName):
 def retrieveDocument(retrievalQuery: RetrievalQuery) -> RetrievalDoc:
     doc = retrievalModel.vectorStore.similarity_search(retrievalQuery.query)
     return RetrievalDoc(doc=doc)
+
 
 if __name__ == '__main__':
     uvicorn.run(app, port=8002, host='0.0.0.0')
