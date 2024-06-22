@@ -24,9 +24,13 @@ services:
       - 8001:8001
     depends_on: #starts service after retrieval-model
       - retrieval-model
-    environment: #set HuggingFace Access Token environment variable
-      - HUGGINGFACEHUB_API_TOKEN=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
-      #OPENAI_API_KEY={INSERT KEY HERE}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
 
   retrieval-model: #retrieval-model
     build: #build docker image using Dockerfile in retrieval-model directory
@@ -37,6 +41,10 @@ services:
       - 8002:8002
     volumes: #create volume "/data" in container that is mapped to "/data" in local directory of host machine that persists data
       - ./vectorstore:/vectorstore
-    environment: #set HuggingFace Access Token environment variable
-      - HUGGINGFACEHUB_API_TOKEN=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
-      #OPENAI_API_KEY={INSERT KEY HERE}
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
