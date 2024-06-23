@@ -6,8 +6,9 @@ The chat model also has a memory feature and keeps track of the chat history of 
 
 ## How to run
 1. Download GGUF models from [Hugging Face](https://huggingface.co/models) and put them in `chat-model/models`
-2. Run command `docker compose up --build` to build and run containers.
-3. Upon completion, RAG Chat will run on localhost:8000
+2. Update .env file with model name.
+3. Run command `docker compose up --build` to build and run containers.
+4. Upon completion, RAG Chat will run on localhost:8000
 
 ## Flow of Events
 ![System Workflow Diagram](https://github.com/wwaihoe/RAG-Chat/assets/91514179/613c29d5-a22d-4ff5-a56d-b3ec7f90b3cb)
