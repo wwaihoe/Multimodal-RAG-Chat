@@ -7,7 +7,7 @@ from llama_cpp import Llama
 
 
 class LlamaCPP():
-    def __init__(self, model_dir: str="../models/Meta-Llama-3-8B-Instruct-Q4_K_M.gguf", **kwargs):
+    def __init__(self, model_dir: str, **kwargs):
         print(f"Loading model: {model_dir}...")
         self.model_dir = model_dir
         self.llm = Llama(
@@ -47,7 +47,7 @@ class LlamaCPP():
 
 """
 class ExLlama():
-    def __init__(self, model_dir: str="../models/TinyLlama-1B-exl2", **kwargs):
+    def __init__(self, model_dir: str, **kwargs):
         print(f"Loading model: {model_dir}...")
         self.model_dir = model_dir
         self.config = ExLlamaV2Config(self.model_dir)
