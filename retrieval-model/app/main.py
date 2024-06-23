@@ -12,7 +12,7 @@ import retrievalModel
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     yield
-    retrievalModel.vectorStore.chroma_client.delete_collection(name="my_collection")
+    retrievalModel.vectorStore.chroma_client.delete_collection(name="chroma_collection")
 
 app = FastAPI(lifespan=lifespan)
 

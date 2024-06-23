@@ -10,7 +10,7 @@ RUN apt-get install gcc -y
 
 WORKDIR /app
 
-COPY ./requirements.txt /app/requirements.txt
+COPY ./requirements.txt requirements.txt
 
 RUN python3 -m pip install --upgrade pip
 

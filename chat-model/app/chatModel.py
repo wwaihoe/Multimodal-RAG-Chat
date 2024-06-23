@@ -60,7 +60,8 @@ class QAChain:
 
 
 
-# Load Llama 3 8b with default settings
-llm = LlamaCPP(model_dir="../models/Meta-Llama-3-8B-Instruct-Q4_K_M.gguf")
+# Load LLM with default settings
+model_name = os.environ['MODEL_NAME']
+llm = LlamaCPP(model_dir=f"../models/{model_name}")
 
 QAChainModel = QAChain(f"http://{retrievalName}:{retrievalPort}", llm)
