@@ -37,10 +37,10 @@ Frameworks:<br>
    - ChromaDB, SentenceTransformers, PyPDF2, FastAPI, Uvicorn
 <br>
 Embedding Model:<br>
-[all-mpnet-base-v2](https://huggingface.co/sentence-transformers/all-mpnet-base-v2)
+[`all-mpnet-base-v2`](https://huggingface.co/sentence-transformers/all-mpnet-base-v2)
 <br>
 <br>
 LLMs Tested:<br>
-[Meta-Llama-3-8B-Instruct-GGUF](https://huggingface.co/bartowski/Meta-Llama-3-8B-Instruct-GGUF)
+[`Meta-Llama-3-8B-Instruct-GGUF`](https://huggingface.co/bartowski/Meta-Llama-3-8B-Instruct-GGUF)
 
 
