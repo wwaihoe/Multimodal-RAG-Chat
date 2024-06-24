@@ -5,7 +5,7 @@ The chat model also has a memory feature and keeps track of the chat history of 
 ![RAGChat screenshot](https://github.com/wwaihoe/RAG-Chat/assets/91514179/06512f90-5a81-4bf4-bd85-652ce3517e98)
 
 ## How to run
-1. Download GGUF models from [Hugging Face](https://huggingface.co/models) and put them in `chat-model/models`
+1. Download Llama family GGUF models from [Hugging Face (recommended: Llama 3 8b Instruct)](https://huggingface.co/bartowski/Meta-Llama-3-8B-Instruct-GGUF) and put them in `chat-model/models`
 2. Update .env file with model name.
 3. Run command `docker compose up --build` to build and run containers.
 4. Upon completion, RAG Chat will run on localhost:8000
