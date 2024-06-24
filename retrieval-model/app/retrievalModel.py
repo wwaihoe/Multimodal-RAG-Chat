@@ -2,7 +2,7 @@ import os
 import uuid
 import chromadb
 from chromadb.utils import embedding_functions
-from PyPDF2 import PdfReader
+from pypdf import PdfReader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
@@ -32,7 +32,7 @@ class chromaDB:
         doc = ""
         #exclude cover page and table of contexts
         for page in reader.pages:
-            page_text = page.extract_text()
+            page_text = page.extract_text(extraction_mode="layout", layout_mode_space_vertically=False)
             page_text += page_delimiter
             doc += page_text
         #split document using recursive splitter
