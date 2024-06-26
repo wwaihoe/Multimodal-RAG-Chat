@@ -60,11 +60,11 @@ function ChatBox() {
           body: requestBody
         })
         if (response.ok) {
-          const responseBody = await response.text() 
+          const responseBody = await response.json() 
           console.log(responseBody)
           const newResponse: messageItem = {
             sender: "assistant",
-            message: responseBody
+            message: responseBody["output"]
           }
           setMessages(messages => [...messages, newResponse])
           const messageBox = document.getElementById("inputMessage") as HTMLInputElement

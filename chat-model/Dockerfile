@@ -14,11 +14,11 @@ COPY ./requirements.txt requirements.txt
 
 RUN python3 -m pip install --upgrade pip
 
+RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
 RUN pip3 install --no-cache-dir --upgrade -r /app/requirements.txt
 
 RUN CMAKE_ARGS="-DLLAMA_CUDA=on" pip install llama-cpp-python
-
-RUN pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
 
 COPY ./app /app
 
