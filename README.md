@@ -37,7 +37,7 @@ Frameworks:<br>
 3. chat-model
    - llama.cpp, LangChain, FastAPI, Uvicorn
 3. retrieval-model
-   - ChromaDB, Transformers, SentenceTransformers, PyPDF2, FastAPI, Uvicorn
+   - ChromaDB, Transformers, SentenceTransformers, pypdf, FastAPI, Uvicorn
 <br>
 Embedding Model:<br>
 all-mpnet-base-v2
