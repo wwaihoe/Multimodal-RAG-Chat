@@ -12,6 +12,8 @@ interface fileItem {
 
 const retrievalModelURL = "localhost"
 const retrievalModelPort = "8002"
+const acceptedFileExtensions = ["pdf", "jpeg", "jpg", "png"]
+
 
 function FileLoader() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -47,9 +49,17 @@ function FileLoader() {
 
   const handleFileChange = (event: React.ChangeEvent) => {
     const target = event.target as HTMLInputElement
-    if (target && target?.files?.[0]) {
+    if (target && target?.files && target?.files?.[0]) {
       const file = target.files[0]
-      setSelectedFile(file)
+      const fileName = file.name
+      const fileExtension = fileName.split('.')?.pop()?.toLowerCase()
+      if (fileExtension && acceptedFileExtensions.includes(fileExtension)) {
+        setSelectedFile(file)
+      }
+      else {
+        alert("Invalid file type. Accepted file types are: pdf, jpeg, jpg, png")
+      }
+      target.value = ''
     }
   }
 
@@ -94,8 +104,8 @@ function FileLoader() {
         }
       }
       setSelectedFile(null)
-      const fileInput = document.getElementById('fileInput') as HTMLInputElement
-      fileInput.value = ''
+      //const fileInput = document.getElementById('fileInput') as HTMLInputElement
+      //fileInput.value = ''
       uploadButton.disabled = false
       loader.style.display = "none";
     } else {
@@ -149,7 +159,7 @@ function FileLoader() {
         <label htmlFor="fileInput" className="custom-file-input">
           Choose file 
         </label>
-        <input type="file" id="fileInput" onChange={handleFileChange} />
+        <input type="file" id="fileInput" accept=".pdf,.jpeg,.jpg,.png" onChange={handleFileChange} />
           <button id="uploadButton" onClick={handleUpload}>Upload</button>
             {selectedFile && (
               <div>

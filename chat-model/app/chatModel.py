@@ -32,31 +32,35 @@ class QAChain:
 
                 #llama3 template
                 chat_history += f"""<|start_header_id|>{line["sender"]}<|end_header_id|>
-                
-                {line["message"]}<|eot_id|>
-                """
+
+{line["message"]}<|eot_id|>
+"""
         try:
             res = requests.post(f"{self.vectorStoreURL}/retrieve", json={"query":  input_query})
             context = res.json()["doc"]
+            context = "None" if context == "" else context
+            file_names = res.json()["fileNames"]
             conversationqa_prompt_template = f"""<|begin_of_text|><|start_header_id|>system<|end_header_id|>
 
-            You are a helpful AI assistant having a conversation with a human<|eot_id|>
-            <|start_header_id|>user<|end_header_id|>
+You are a helpful AI assistant having a conversation with a human<|eot_id|>
+<|start_header_id|>user<|end_header_id|>
 
-            Use the following context to answer the human's question. Provide a single clear and concise response. If the context does not provide sufficient context to answer the question, say "Sorry, I do not have enough knowledge to answer the question.". 
-            Context: {context}. 
-            Chat history: {chat_history}.<|eot_id|>
-            <|start_header_id|>user<|end_header_id|>
-                
-            {input_query}<|eot_id|> 
-            <|start_header_id|>assistant<|end_header_id|>
+Use the following context to answer the human's question. Provide a single clear and concise response. If the context does not provide sufficient context to answer the question, say "Sorry, I do not have enough knowledge to answer the question.". 
+Context: {context}<|eot_id|>
+Chat history: {chat_history}
+<|start_header_id|>user<|end_header_id|>
+   
+{input_query}<|eot_id|> 
+<|start_header_id|>assistant<|end_header_id|>
 
-            """
+"""
 
             output = self.llm.generate(conversationqa_prompt_template)
         except:
             output = f'Error with model'
-        return output
+            file_names = "None"
+        response = {"output": output, "file_names": file_names}
+        return response
 
 
 
