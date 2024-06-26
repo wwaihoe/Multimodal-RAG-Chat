@@ -12,8 +12,8 @@ The chat model also has a memory feature and keeps track of the chat history of 
 3. Run command `docker compose up --build` to build and run containers.
 4. Upon completion, RAG Chat will run on localhost:8000
 
-## Flow of Events
-![System Workflow Diagram](https://github.com/wwaihoe/RAG-Chat/assets/91514179/613c29d5-a22d-4ff5-a56d-b3ec7f90b3cb)
+## System Workflow Diagram
+![System Workflow Diagram](https://github.com/wwaihoe/RAG-Chat/assets/91514179/b9233f7f-aa93-41ff-a8b7-b48dbb8d4069)
 
 Demo
 https://github.com/wwaihoe/RAG-Chat/assets/91514179/f2faf433-501b-471d-b5e3-b9ac086db65f
