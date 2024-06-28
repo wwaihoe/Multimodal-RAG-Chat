@@ -3,11 +3,11 @@ from transformers import AutoProcessor, AutoModelForCausalLM
 
 
 class ImageCaptionModel():
-  def __init__(self, model_str: str="microsoft/Florence-2-large-ft", **kwargs):
+  def __init__(self, model_str: str="microsoft/Florence-2-large-ft"):
     self.model = AutoModelForCausalLM.from_pretrained(model_str, trust_remote_code=True)
     self.processor = AutoProcessor.from_pretrained(model_str, trust_remote_code=True)
   
-  def generate(self, file, **kwargs):
+  def generate(self, file):
     image = self.load_image(file)
     prompt = "<MORE_DETAILED_CAPTION>"
     inputs = self.processor(text=prompt, images=image, return_tensors="pt")

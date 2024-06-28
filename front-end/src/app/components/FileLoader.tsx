@@ -12,7 +12,7 @@ interface fileItem {
 
 const retrievalModelURL = "localhost"
 const retrievalModelPort = "8002"
-const acceptedFileExtensions = ["pdf", "jpeg", "jpg", "png"]
+const acceptedFileExtensions = ["pdf", "jpeg", "jpg", "png", "mp3"]
 
 
 function FileLoader() {
@@ -57,7 +57,7 @@ function FileLoader() {
         setSelectedFile(file)
       }
       else {
-        alert("Invalid file type. Accepted file types are: pdf, jpeg, jpg, png")
+        alert("Invalid file type. Accepted file types are: pdf, jpeg, jpg, png, mp3")
       }
       target.value = ''
     }

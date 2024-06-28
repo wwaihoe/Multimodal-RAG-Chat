@@ -2,11 +2,11 @@
 FROM nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04
 
 # Install Python 3 and development tools
-RUN apt-get update 
+RUN apt update 
 RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && echo $CONTAINER_TIMEZONE > /etc/timezone
-RUN apt-get install -y python3
+RUN apt install -y python3
 RUN apt install -y python3-pip
-RUN apt-get install gcc -y 
+RUN apt install gcc -y 
 
 WORKDIR /app
 
