@@ -13,12 +13,13 @@ The chat model also has a memory feature and keeps track of the chat history of 
 2. Update .env file with model name.
 3. Run command `docker compose up --build` to build and run containers.
 4. Upon completion, RAG Chat will run on localhost:8000
+<br>
 **Requires NVIDIA GPU and CUDA Toolkit 12.4.1.**
 
 # System Workflow Diagram
-#![System Workflow Diagram](https://github.com/wwaihoe/multimodal-RAG-Chat/assets/91514179/ea5e0c02-eaa8-4f49-b0f1-db1924346d5d)
+![System Workflow Diagram](https://github.com/wwaihoe/multimodal-RAG-Chat/assets/91514179/ea5e0c02-eaa8-4f49-b0f1-db1924346d5d)
 
-Demo
+### Demo
 https://github.com/wwaihoe/RAG-Chat/assets/91514179/f2faf433-501b-471d-b5e3-b9ac086db65f
 
 ## Microservices Architecture
