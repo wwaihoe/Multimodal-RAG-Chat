@@ -3,8 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 import uvicorn
 from pydantic import BaseModel
-import json
 import retrievalModel
+import os
 
 
 
@@ -55,13 +55,23 @@ def loadFiles():
 @app.post("/upload")
 def uploadDocument(file: UploadFile = File(...)):
     if file.content_type == "application/pdf":
-        retrievalModel.vectorStore.addToVectorStore(file.file, file.filename, file.size)
+        retrievalModel.vectorStore.addDocToVectorStore(file.file, file.filename, file.size)
         print("PDF Uploaded: ", file.filename)
     elif file.content_type == "image/jpeg" or file.content_type == "image/png":
         retrievalModel.vectorStore.addImageToVectorStore(file.file, file.filename, file.size)
         print("Image Uploaded: ", file.filename)
+    elif file.content_type == "audio/mpeg":
+        os.makedirs("temp", exist_ok=True)
+        path = f"temp/{file.filename}"
+        with open(path, "wb") as temp_file:
+            temp_file.write(file.file.read())
+        retrievalModel.vectorStore.addSpeechToVectorStore(path, file.filename, file.size)
+        # Delete the temp_file after use
+        temp_file.close()
+        os.remove(path)
+        print("Speech Uploaded: ", file.filename)
     else:
-        raise HTTPException(status_code=404, detail="Only PDF/JPG/PNG files are accepted!")
+        raise HTTPException(status_code=404, detail="Only PDF/JPG/PNG/MP3 files are accepted!")
     return 
 
 @app.post("/remove")

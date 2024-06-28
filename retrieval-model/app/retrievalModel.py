@@ -5,6 +5,7 @@ from chromadb.utils import embedding_functions
 from pypdf import PdfReader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from imageModels import ImageCaptionModel
+from speechModels import SpeechRecognitionModel
 
 
 import torch
@@ -16,14 +17,15 @@ else:
 
 
 class ChromaDB:
-    def __init__(self, embeddingfunction, imageCaptionModel, chroma_client_dir: str="/vectorstore/documents_chromadb", collection_name: str="chroma_collection"):
+    def __init__(self, embeddingfunction, imageCaptionModel, speechRecognitionModel, chroma_client_dir: str="/vectorstore/documents_chromadb", collection_name: str="chroma_collection"):
         self.embeddingfunction = embeddingfunction
         self.imageCaptionModel = imageCaptionModel
+        self.speechRecognitionModel = speechRecognitionModel
         self.chroma_client = chromadb.PersistentClient(path=chroma_client_dir)
         self.collection = self.chroma_client.get_or_create_collection(name=collection_name, embedding_function=self.embeddingfunction)
         self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size = 500,
-            chunk_overlap  = 150,
+            chunk_size = 1000,
+            chunk_overlap = 250,
             length_function = len,
         )
         self.hashmapIDs = {}
@@ -42,7 +44,7 @@ class ChromaDB:
         texts = self.text_splitter.split_text(doc)
         return texts
     
-    def addToVectorStore(self, file, fileName: str, fileSize: float):
+    def addDocToVectorStore(self, file, fileName: str, fileSize: float):
         texts = self.splitDocument(file)
         self.hashmapIDs[fileName] = []
         self.hashmapSizes[fileName] = fileSize
@@ -67,6 +69,22 @@ class ChromaDB:
             metadatas=[{"source": fileName}],
             ids=[id]
         )
+        return self.hashmapIDs[fileName]
+    
+    def addSpeechToVectorStore(self, fileDir: str, fileName: str, fileSize: float):
+        speech = self.speechRecognitionModel.generate(fileDir)
+        texts = self.text_splitter.split_text(speech)
+        self.hashmapIDs[fileName] = []
+        self.hashmapSizes[fileName] = fileSize
+        #add each text to the vector store
+        for i in range(len(texts)):
+            id = str(uuid.uuid4())
+            self.collection.add(
+                documents=[texts[i]],
+                metadatas=[{"source": fileName}],
+                ids=[id]
+            )
+            self.hashmapIDs[fileName].append(id)
         return self.hashmapIDs[fileName]
     
     def loadFiles(self):
@@ -96,4 +114,5 @@ class ChromaDB:
 #initialize the embedding function, image caption model, and vector store
 sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(model_name="all-mpnet-base-v2", device=device)
 imageCaptionModel = ImageCaptionModel()
-vectorStore = ChromaDB(embeddingfunction = sentence_transformer_ef, imageCaptionModel = imageCaptionModel, chroma_client_dir = "/vectorstore/documents_chromadb", collection_name = "chroma_collection")
+speechRecognitionModel = SpeechRecognitionModel()
+vectorStore = ChromaDB(embeddingfunction = sentence_transformer_ef, imageCaptionModel = imageCaptionModel, speechRecognitionModel = speechRecognitionModel, chroma_client_dir = "/vectorstore/documents_chromadb", collection_name = "chroma_collection")
