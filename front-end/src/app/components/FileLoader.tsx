@@ -116,7 +116,7 @@ function FileLoader() {
   const handleDelete = async (fileName: string) => {
     try {
       const body = {
-        "fileName": fileName
+        "file_name": fileName
       }
       const JSONBody = JSON.stringify(body)
       const response = await fetch(`http://${retrievalModelURL}:${retrievalModelPort}/remove`, {

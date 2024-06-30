@@ -18,8 +18,8 @@ else:
 
 
 class QAChain:
-    def __init__(self, vectorStoreURL, llm):
-        self.vectorStoreURL = vectorStoreURL
+    def __init__(self, vector_storeURL, llm):
+        self.vector_storeURL = vector_storeURL
         self.llm = llm
         
 
@@ -36,10 +36,10 @@ class QAChain:
 {line["message"]}<|eot_id|>
 """
         try:
-            res = requests.post(f"{self.vectorStoreURL}/retrieve", json={"query":  input_query})
+            res = requests.post(f"{self.vector_storeURL}/retrieve", json={"query":  input_query})
             context = res.json()["doc"]
             context = "None" if context == "" else context
-            file_names = res.json()["fileNames"]
+            file_names = res.json()["file_names"]
             conversationqa_prompt_template = f"""<|begin_of_text|><|start_header_id|>system<|end_header_id|>
 
 You are a helpful AI assistant having a conversation with a human<|eot_id|>

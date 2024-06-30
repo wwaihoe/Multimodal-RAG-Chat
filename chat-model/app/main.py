@@ -20,7 +20,7 @@ app.add_middleware(
 
 class ChatResponse(BaseModel):
     output: str
-    fileNames: list[str]
+    file_names: list[str]
 
 
 @app.get("/")
@@ -31,7 +31,7 @@ def read_root():
 async def getResponse(request: Request):
     input = await request.json()
     response = chatModel.QAChainModel.generate(input)
-    return ChatResponse(output=response["output"], fileNames=response["file_names"])   
+    return ChatResponse(output=response["output"], file_names=response["file_names"])   
 
 if __name__ == '__main__':
     uvicorn.run(app, port=8001, host='0.0.0.0')

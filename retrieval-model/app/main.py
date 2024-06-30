@@ -11,7 +11,7 @@ import os
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     yield
-    retrievalModel.vectorStore.chroma_client.delete_collection(name="chroma_collection")
+    retrievalModel.vector_store.chroma_client.delete_collection(name="chroma_collection")
 
 app = FastAPI(lifespan=lifespan)
 
@@ -27,7 +27,7 @@ app.add_middleware(
 
 
 class FileName(BaseModel):
-    fileName: str
+    file_name: str
 
 class FileList(BaseModel):
     files: list
@@ -37,7 +37,7 @@ class RetrievalQuery(BaseModel):
 
 class RetrievalDoc(BaseModel):
     doc: str
-    fileNames: set[str]
+    file_names: set[str]
 
 
 @app.get("/")
@@ -45,27 +45,27 @@ def read_root():
     return {"Server": "On"}
 
 @app.get("/load")
-def loadFiles():
-    fileDict = retrievalModel.vectorStore.loadFiles()
+def load_files():
+    file_dict = retrievalModel.vector_store.load_files()
     files = []
-    for fileName, fileSize in fileDict.items():
-        files.append({"name": fileName, "size": fileSize})
+    for file_name, file_size in file_dict.items():
+        files.append({"name": file_name, "size": file_size})
     return FileList(files=files)
 
 @app.post("/upload")
-def uploadDocument(file: UploadFile = File(...)):
+def upload_document(file: UploadFile = File(...)):
     if file.content_type == "application/pdf":
-        retrievalModel.vectorStore.addDocToVectorStore(file.file, file.filename, file.size)
+        retrievalModel.vector_store.add_doc_to_vectorstore(file.file, file.filename, file.size)
         print("PDF Uploaded: ", file.filename)
     elif file.content_type == "image/jpeg" or file.content_type == "image/png":
-        retrievalModel.vectorStore.addImageToVectorStore(file.file, file.filename, file.size)
+        retrievalModel.vector_store.add_image_to_vectorStore(file.file, file.filename, file.size)
         print("Image Uploaded: ", file.filename)
     elif file.content_type == "audio/mpeg":
         os.makedirs("temp", exist_ok=True)
         path = f"temp/{file.filename}"
         with open(path, "wb") as temp_file:
             temp_file.write(file.file.read())
-        retrievalModel.vectorStore.addSpeechToVectorStore(path, file.filename, file.size)
+        retrievalModel.vector_store.add_speech_to_vectorstore(path, file.filename, file.size)
         # Delete the temp_file after use
         temp_file.close()
         os.remove(path)
@@ -75,15 +75,15 @@ def uploadDocument(file: UploadFile = File(...)):
     return 
 
 @app.post("/remove")
-def removeDocument(fileName: FileName):
-    retrievalModel.vectorStore.removeFromVectorStore(fileName.fileName)
-    print("Removed: ", fileName.fileName)
+def remove_document(file_name: FileName):
+    retrievalModel.vector_store.remove_from_vectorstore(file_name.file_name)
+    print("Removed: ", file_name.file_name)
     return
 
 @app.post("/retrieve")
-def retrieveDocument(retrievalQuery: RetrievalQuery) -> RetrievalDoc:
-    result = retrievalModel.vectorStore.similarity_search(retrievalQuery.query)
-    return RetrievalDoc(doc=result["content"], fileNames=result["file_names"])
+def retrieve_document(retrieval_query: RetrievalQuery) -> RetrievalDoc:
+    result = retrievalModel.vector_store.similarity_search(retrieval_query.query)
+    return RetrievalDoc(doc=result["content"], file_names=result["file_names"])
 
 
 if __name__ == '__main__':
