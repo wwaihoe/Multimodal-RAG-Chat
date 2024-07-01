@@ -85,11 +85,13 @@
 .aIMessage {
   color:white;
   padding-left: 5px;
+  white-space: pre-line;
 }
 
 .humanMessage {
   color:ivory;
   padding-left: 5px;
+  white-space: pre-line;
 }
 
 .chatInput {

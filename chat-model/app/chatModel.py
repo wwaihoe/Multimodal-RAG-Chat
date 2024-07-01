@@ -40,7 +40,7 @@ class QAChain:
             context = res.json()["doc"]
             context = "None" if context == "" else context
             file_names = res.json()["file_names"]
-            conversationqa_prompt_template = f"""<|begin_of_text|><|start_header_id|>system<|end_header_id|>
+            conversationqa_prompt_template = f"""<|start_header_id|>system<|end_header_id|>
 
 You are a helpful AI assistant having a conversation with a human<|eot_id|>
 <|start_header_id|>user<|end_header_id|>

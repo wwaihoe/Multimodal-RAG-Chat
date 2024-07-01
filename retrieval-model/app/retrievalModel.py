@@ -26,8 +26,8 @@ class ChromaDB:
         self.chroma_client = chromadb.PersistentClient(path=chroma_client_dir)
         self.collection = self.chroma_client.get_or_create_collection(name=collection_name, embedding_function=self.embedding_function)
         self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size = 1000,
-            chunk_overlap = 250,
+            chunk_size = 1500,
+            chunk_overlap = 500,
             length_function = len,
         )
         self.hashmap_IDs = {}
@@ -39,7 +39,8 @@ class ChromaDB:
         doc = ""
         #exclude cover page and table of contexts
         for page in reader.pages:
-            page_text = page.extract_text(extraction_mode="layout", layout_mode_space_vertically=False)
+            page.transfer_rotation_to_content()
+            page_text = page.extract_text()
             page_text += page_delimiter
             doc += page_text
         #split document using recursive splitter

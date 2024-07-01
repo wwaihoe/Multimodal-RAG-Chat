@@ -12,6 +12,11 @@ interface messageItem {
 
 function ChatMessage(prop: messageItem) {
     const AIMessage = prop.sender === "AI";
+    const addFormat = (text: string) => {
+        var bold = /\*\*(.*?)\*\*/gm;
+        var html = text.replace(bold, '<strong>$1</strong>');            
+        return html;
+    }   
 
     return (
       <div>
@@ -26,7 +31,7 @@ function ChatMessage(prop: messageItem) {
             priority
           />
           <p className={styles.aIMessage}>
-            {prop.message}
+            {addFormat(prop.message)}
           </p>
         </div>
         )}
@@ -41,7 +46,7 @@ function ChatMessage(prop: messageItem) {
             priority
           />
           <p className={styles.humanMessage}>
-            {prop.message}
+            {addFormat(prop.message)}
           </p>
         </div>
       )}
