@@ -38,7 +38,7 @@ function ChatBox() {
         sendMessageButton.disabled = true
         const inputMessage = messageBox.value
         const newMessage: messageItem = {
-          sender: "Human",
+          sender: "user",
           message: inputMessage
         }
         const currDialog: dialog = {
@@ -60,11 +60,11 @@ function ChatBox() {
           body: requestBody
         })
         if (response.ok) {
-          const responseBody = await response.text() 
+          const responseBody = await response.json() 
           console.log(responseBody)
           const newResponse: messageItem = {
-            sender: "AI",
-            message: responseBody
+            sender: "assistant",
+            message: responseBody["output"]
           }
           setMessages(messages => [...messages, newResponse])
           const messageBox = document.getElementById("inputMessage") as HTMLInputElement

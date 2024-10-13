@@ -1,16 +1,12 @@
 import os
-
-
-from langchain.vectorstores import Chroma
-from PyPDF2 import PdfReader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+import uuid
 import chromadb
-#for HuggingFace
-from langchain.embeddings import HuggingFaceEmbeddings
+from chromadb.utils import embedding_functions
+from pypdf import PdfReader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from imageModels import ImageCaptionModel
+from speechModels import SpeechRecognitionModel
 
-
-chroma_client = chromadb.PersistentClient(path="/vectorstore/documents_chromadb")
-collection = chroma_client.get_or_create_collection(name="chroma_collection")
 
 import torch
 #Use GPU if available
@@ -19,70 +15,104 @@ if torch.cuda.is_available():
 else:
     device = 'cpu'
 
-model_name = "thenlper/gte-base"
-model_kwargs = {'device': device}
-encode_kwargs = {'normalize_embeddings': True}
-embeddings = HuggingFaceEmbeddings(
-    model_name=model_name,
-    model_kwargs=model_kwargs,
-    encode_kwargs=encode_kwargs
-)
 
-
-class chromaDB:
-    def __init__(self, chroma_client, collection_name, embeddings):
-        self.langchain_chroma = Chroma(
-            client=chroma_client,
-            collection_name=collection_name,
-            embedding_function=embeddings,
+class ChromaDB:
+    def __init__(self, embeddingfunction, imageCaptionModel, speechRecognitionModel, chroma_client_dir: str="/vectorstore/documents_chromadb", collection_name: str="chroma_collection"):
+        self.embeddingfunction = embeddingfunction
+        self.imageCaptionModel = imageCaptionModel
+        self.speechRecognitionModel = speechRecognitionModel
+        self.chroma_client = chromadb.PersistentClient(path=chroma_client_dir)
+        self.collection = self.chroma_client.get_or_create_collection(name=collection_name, embedding_function=self.embeddingfunction)
+        self.text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size = 1000,
+            chunk_overlap = 250,
+            length_function = len,
         )
-        self.currID = 0
         self.hashmapIDs = {}
         self.hashmapSizes = {}
+
     def splitDocument(self, file):
         reader = PdfReader(file)
         page_delimiter = '\n'
-        docu = ""
+        doc = ""
         #exclude cover page and table of contexts
         for page in reader.pages:
-            page_text = page.extract_text()
+            page_text = page.extract_text(extraction_mode="layout", layout_mode_space_vertically=False)
             page_text += page_delimiter
-            docu += page_text
+            doc += page_text
         #split document using recursive splitter
-        text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size = 1000,
-            chunk_overlap  = 300,
-            length_function = len,
-        )
-        texts = text_splitter.split_text(docu)
+        texts = self.text_splitter.split_text(doc)
         return texts
     
-    def addToVectorStore(self, file, fileName, fileSize):
+    def addDocToVectorStore(self, file, fileName: str, fileSize: float):
         texts = self.splitDocument(file)
         self.hashmapIDs[fileName] = []
         self.hashmapSizes[fileName] = fileSize
+        #add each text to the vector store
         for i in range(len(texts)):
-            self.langchain_chroma.add_texts(
-                ids=[str(self.currID)],
-                texts=[texts[i]],
-                metadatas=[{"source": fileName}]
+            id = str(uuid.uuid4())
+            self.collection.add(
+                documents=[texts[i]],
+                metadatas=[{"source": fileName}],
+                ids=[id]
             )
-            self.hashmapIDs[fileName].append(str(self.currID))
-            self.currID += 1
+            self.hashmapIDs[fileName].append(id)
+        return self.hashmapIDs[fileName]
+
+    def addImageToVectorStore(self, file, fileName: str, fileSize: float):
+        caption = self.imageCaptionModel.generate(file)
+        id = str(uuid.uuid4())
+        self.hashmapIDs[fileName] = [id]
+        self.hashmapSizes[fileName] = fileSize
+        self.collection.add(
+            documents=[caption],
+            metadatas=[{"source": fileName}],
+            ids=[id]
+        )
+        return self.hashmapIDs[fileName]
+    
+    def addSpeechToVectorStore(self, fileDir: str, fileName: str, fileSize: float):
+        speech = self.speechRecognitionModel.generate(fileDir)
+        texts = self.text_splitter.split_text(speech)
+        self.hashmapIDs[fileName] = []
+        self.hashmapSizes[fileName] = fileSize
+        #add each text to the vector store
+        for i in range(len(texts)):
+            id = str(uuid.uuid4())
+            self.collection.add(
+                documents=[texts[i]],
+                metadatas=[{"source": fileName}],
+                ids=[id]
+            )
+            self.hashmapIDs[fileName].append(id)
+        return self.hashmapIDs[fileName]
     
     def loadFiles(self):
         return self.hashmapSizes
 
-    def similarity_search(self, input):
-        docs = self.langchain_chroma.similarity_search(input, k=1)
-        return docs[0].page_content
+    def similarity_search(self, input: str, k: int = 2):
+        content = ""
+        result = self.collection.query(
+            query_texts=[input],
+            n_results=k
+        )
+        for doc in result["documents"][0]:
+            content += doc
+            content += "\n\n-----\n\n"
+        file_names = set()
+        for metadata in result["metadatas"][0]:
+            file_names.add(metadata["source"])
+        return {"content": content, "file_names": file_names}
 
     def removeFromVectorStore(self, fileName):
-        documents = self.langchain_chroma.get(include=["metadatas"])
-        ids_to_delete = self.hashmapIDs[fileName]
-        self.hashmapIDs.pop(fileName)
+        ids_to_delete = self.hashmapIDs.pop(fileName)
         self.hashmapSizes.pop(fileName)
-        self.langchain_chroma.delete(ids_to_delete)
+        self.collection.delete(where={"source": fileName})
+        return ids_to_delete
 
 
-vectorStore = chromaDB(chroma_client, "chroma_collection", embeddings)
+#initialize the embedding function, image caption model, and vector store
+sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(model_name="all-mpnet-base-v2", device=device)
+imageCaptionModel = ImageCaptionModel()
+speechRecognitionModel = SpeechRecognitionModel()
+vectorStore = ChromaDB(embeddingfunction = sentence_transformer_ef, imageCaptionModel = imageCaptionModel, speechRecognitionModel = speechRecognitionModel, chroma_client_dir = "/vectorstore/documents_chromadb", collection_name = "chroma_collection")
